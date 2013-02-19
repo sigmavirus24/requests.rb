@@ -1,30 +1,39 @@
 require 'net/http'
+require 'requests/request'
+require 'requests/structs'
 
 module Requests
   DEFAULT_REDIRECT_LIMIT = 30
 
   class Session
     def initialize
-      @headers = Hash.new
+      @headers = Headers.new
       @proxies = Hash.new
       @max_redirects = DEFAULT_REDIRECT_LIMIT
       @adapters = Hash.new
     end
+
+    def request(method, url, headers=nil, files=nil, data=nil, cookies=nil)
+      r = Request.new(method, url, headers, files, data, cookies)
+      p = r.prepare()
+      return send(p)
+    end
+
+    def send(prep)
+      req = nil
+      case prep.method
+      when 'GET'
+        req = Net::HTTP::Get.new(prep.uri.request_uri)
+      when 'POST'
+        req = Net::HTTP::Post.new(prep.uri.request_uri)
+      when 'PUT'
+        req = Net::HTTP::Put.new(prep.uri.request_uri)
+      end
+
+      prep.headers.each { |k, v| req[k] = v }
+
+      http = Net::HTTP.start(prep.uri.host, prep.uri.port, :use_ssl => (prep.uri.scheme == 'https'))
+      return http.request(req) if !req.nil?
+    end
   end
 end
-
-## Break up the URL
-#u = URI(url)
-#
-#req = nil
-#case method
-#when 'get'
-#  req = Net::HTTP::Get.new u.request_uri
-#when 'post'
-#  req = Net::HTTP::Post.new u.request_uri
-#when 'put'
-#  req = Net::HTTP::Put.new u.request_uri
-#end
-#
-#http = Net::HTTP.start(u.host, u.port, :use_ssl => (u.scheme == 'https'))
-#http.request(req) if !req.nil?

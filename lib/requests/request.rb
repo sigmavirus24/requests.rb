@@ -1,5 +1,6 @@
 require 'uri'
 require 'securerandom'
+require 'requests/structs'
 require 'requests/exceptions'
 
 module Requests
@@ -9,11 +10,11 @@ module Requests
     def initialize(method, url, headers=nil, files=nil, data=nil, params=nil, cookies=nil)
       @method = method
       @url = url
-      @headers = headers
-      @files = files
-      @data = data
-      @params = params
-      @cookies = cookies
+      @headers = headers || Hash.new
+      @files = files || Hash.new
+      @data = data || Hash.new
+      @params = params || Hash.new
+      @cookies = cookies || Hash.new
     end
 
     def prepare()
@@ -63,11 +64,11 @@ module Requests
     end
 
     def prepare_headers(headers)
-      @headers = headers
+      @headers = Headers.new headers
     end
 
     def prepare_body(data, files)
-      if not files.nil?
+      if not files.nil? and not files.empty?
         #@body, content_type = encode_files(data, files)
         #@headers['Content-Type'] = content_type
         raise NotImplementedError "multipart/form-data bodies have not yet been implemented"
@@ -78,12 +79,10 @@ module Requests
 
     private
     def encode_params(params)
-      if params.responds_to? :each
+      if params.respond_to? :each
         query_string = []
-        params.each do |k, v|
-          query_string <<= "#{k}=#{v}"
-        end
-        return query_string.join "&"
+        params.each { |k, v| query_string <<= "#{k}=#{v}" }
+        return query_string.empty? ? nil : query_string.join("&")
       else
         return params
       end
@@ -114,7 +113,7 @@ module Requests
       #    pointer = v
       #  end
 
-      #  if pointer.responds_to? read
+      #  if pointer.respond_to? read
       #    pointer = pointer.read
       #  end
 
