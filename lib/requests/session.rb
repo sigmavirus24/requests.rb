@@ -2,6 +2,7 @@ require 'net/http'
 require 'net/https'
 require 'requests/request'
 require 'requests/structs'
+require 'requests/response'
 
 module Requests
   DEFAULT_REDIRECT_LIMIT = 30
@@ -36,7 +37,12 @@ module Requests
 
       http = Net::HTTP.new(prep.uri.host, prep.uri.port)
       http.use_ssl = prep.uri.scheme == 'https'
-      return http.start { |context| context.request(req) } unless req.nil?
+      unless req.nil?
+        r = Response.new(http.start { |context| context.request(req) })
+      else
+        r = nil
+      end
+      return r
     end
   end
 end
