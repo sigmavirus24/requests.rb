@@ -1,4 +1,5 @@
 require 'net/http'
+require 'net/https'
 require 'requests/request'
 require 'requests/structs'
 
@@ -33,8 +34,9 @@ module Requests
       # Set headers
       prep.headers.each { |k, v| req[k] = v }
 
-      http = Net::HTTP.start(prep.uri.host, prep.uri.port, :use_ssl => (prep.uri.scheme == 'https'))
-      return http.request(req) if !req.nil?
+      http = Net::HTTP.new(prep.uri.host, prep.uri.port)
+      http.use_ssl = prep.uri.scheme == 'https'
+      return http.start { |context| context.request(req) } unless req.nil?
     end
   end
 end
