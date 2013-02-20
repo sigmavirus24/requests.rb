@@ -40,6 +40,10 @@ module Requests
       end
     end
 
+    def url
+      @uri.to_s
+    end
+
     def prepare_url(url, params)
       @uri = URI(url)
 
@@ -65,6 +69,7 @@ module Requests
 
     def prepare_headers(headers)
       @headers = Headers.new headers
+      @headers['User-Agent'] ||= 'requests.rb/0.0.0'
     end
 
     def prepare_body(data, files)

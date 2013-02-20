@@ -38,7 +38,7 @@ module Requests
       http = Net::HTTP.new(prep.uri.host, prep.uri.port)
       http.use_ssl = prep.uri.scheme == 'https'
       unless req.nil?
-        r = Response.new(http.start { |context| context.request(req) })
+        r = Response.new(http.start { |context| context.request(req) }, prep)
       else
         r = nil
       end
