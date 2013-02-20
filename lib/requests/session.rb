@@ -30,6 +30,7 @@ module Requests
         req = Net::HTTP::Put.new(prep.uri.request_uri)
       end
 
+      # Set headers
       prep.headers.each { |k, v| req[k] = v }
 
       http = Net::HTTP.start(prep.uri.host, prep.uri.port, :use_ssl => (prep.uri.scheme == 'https'))
