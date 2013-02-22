@@ -33,7 +33,7 @@ module Requests
       end
 
       # Set headers
-      prep.headers.each { |k, v| req[k] = v }
+      prep.headers.each_header { |k, v| req[k] = v }
 
       http = Net::HTTP.new(prep.uri.host, prep.uri.port)
       http.use_ssl = prep.uri.scheme == 'https'

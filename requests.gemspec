@@ -9,4 +9,6 @@ Gem::Specification.new do |s|
   s.files = Dir.glob('lib/**/*.rb')
   s.homepage = 'https://github.com/sigmavirus24/requests.rb'
   s.required_paths = ['lib']
+
+  s.add_dependency 'json', '~> 1.5.4'
 end

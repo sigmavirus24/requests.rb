@@ -1,4 +1,8 @@
-require 'json'
+begin
+  require 'json'
+rescue LoadError
+  JSON = nil
+end
 
 module Requests
   class Response
@@ -25,7 +29,11 @@ module Requests
 
     def json
       body = @original_response.body
-      return JSON.parse body
+      return JSON.parse body unless JSON.nil?
+    end
+
+    def body
+      @original_response.body
     end
 
     private

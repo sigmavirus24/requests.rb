@@ -11,9 +11,5 @@ module  Requests
         initialize_http_header(initial_headers)
       end
     end
-
-    def each
-      each_header
-    end
   end
 end
