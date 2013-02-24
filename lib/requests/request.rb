@@ -76,10 +76,11 @@ module Requests
       if not files.nil? and not files.empty?
         #@body, content_type = encode_files(data, files)
         #@headers['Content-Type'] = content_type
-        raise NotImplementedError "multipart/form-data bodies have not yet been implemented"
+        raise NotImplementedError.new("multipart/form-data bodies have not yet " +
+                                   "been implemented")
       else
         @body = encode_params(data)
-        @headers['content-type'] = 'application/x-www-urlencoded'
+        @headers['content-type'] = 'application/x-www-form-urlencoded'
       end
 
       unless @body.nil? or @body.empty?
