@@ -10,5 +10,5 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/sigmavirus24/requests.rb'
   s.required_paths = ['lib']
 
-  s.add_dependency 'json', '~> 1.5.4'
+  s.add_dependency 'json', '~> 1.7'
 end
