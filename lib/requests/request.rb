@@ -7,14 +7,14 @@ module Requests
   class Request
     attr_accessor :method, :url, :headers, :files, :data, :params, :cookies
 
-    def initialize(method, url, headers=nil, files=nil, data=nil, params=nil, cookies=nil)
+    def initialize(method, url, args={})
       @method = method
       @url = url
-      @headers = headers || Hash.new
-      @files = files || Hash.new
-      @data = data || Hash.new
-      @params = params || Hash.new
-      @cookies = cookies || Hash.new
+      @headers = args[:headers] || Hash.new
+      @files = args[:files] || Hash.new
+      @data = args[:data] || Hash.new
+      @params = args[:params] || Hash.new
+      @cookies = args[:cookies] || Hash.new
     end
 
     def prepare()
@@ -79,15 +79,18 @@ module Requests
         raise NotImplementedError "multipart/form-data bodies have not yet been implemented"
       else
         @body = encode_params(data)
+        @headers['content-type'] = 'application/x-www-urlencoded'
+      end
+
+      unless @body.nil? or @body.empty?
+        @headers['content-length'] = @body.length
       end
     end
 
     private
     def encode_params(params)
-      if params.respond_to? :each
-        query_string = []
-        params.each { |k, v| query_string <<= "#{k}=#{v}" }
-        return query_string.empty? ? nil : query_string.join("&")
+      if params.respond_to? :map
+        return URI.encode_www_form params
       else
         return params
       end

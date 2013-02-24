@@ -15,8 +15,18 @@ module Requests
       @adapters = Hash.new
     end
 
-    def request(method, url, headers=nil, files=nil, data=nil, cookies=nil)
-      r = Request.new(method, url, headers, files, data, cookies)
+    def inspect
+      '<Requests::Session:0x%08x>' % self.object_id
+    end
+
+    def request(method, url, args={})
+    #def request(method,
+    #            url,
+    #            headers=Requests::Headers.new,
+    #            files=nil,
+    #            data=nil,
+    #            cookies=nil)
+      r = Request.new(method, url, args)
       p = r.prepare()
       return send(p)
     end
@@ -24,12 +34,19 @@ module Requests
     def send(prep)
       req = nil
       case prep.method
-      when 'GET'
+      when :GET
         req = Net::HTTP::Get.new(prep.uri.request_uri)
-      when 'POST'
+      when :POST
         req = Net::HTTP::Post.new(prep.uri.request_uri)
-      when 'PUT'
+      when :PUT
         req = Net::HTTP::Put.new(prep.uri.request_uri)
+      when :OPTIONS
+        req = Net::HTTP::Options.new(prep.uri.request_uri)
+      end
+
+      unless prep.body.nil? or prep.body.empty?
+        req.body = prep.body
+        req.content_type = prep.headers['content-type']
       end
 
       # Set headers
