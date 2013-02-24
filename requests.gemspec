@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.email = 'graffatcolmingov@gmail.com'
   s.files = Dir.glob('lib/**/*.rb')
   s.homepage = 'https://github.com/sigmavirus24/requests.rb'
-  s.required_paths = ['lib']
+  s.require_paths = ['lib']
 
   s.add_dependency 'json', '~> 1.7'
 end
