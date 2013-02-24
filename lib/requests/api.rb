@@ -31,17 +31,17 @@ module Requests
   end
 
   def self.get(url, args={})
-    args[-1][:allow_redirects] ||= true
+    args[:allow_redirects] ||= true
     request(:get, url, args)
   end
 
   def self.options(url, args={})
-    args[-1][:allow_redirects] ||= true
+    args[:allow_redirects] ||= true
     request(:options, url, args)
   end
 
   def self.head(url, args={})
-    args[-1][:allow_redirects] ||= false
+    args[:allow_redirects] ||= false
     request(:head, url, args)
   end
 
