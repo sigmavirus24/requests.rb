@@ -34,18 +34,19 @@ module Requests
     def send(prep)
       req = nil
       case prep.method
-      when :GET
+      when :get
         req = Net::HTTP::Get.new(prep.uri.request_uri)
-      when :POST
+      when :post
         req = Net::HTTP::Post.new(prep.uri.request_uri)
-      when :PUT
+      when :put
         req = Net::HTTP::Put.new(prep.uri.request_uri)
-      when :OPTIONS
+      when :options
         req = Net::HTTP::Options.new(prep.uri.request_uri)
       end
 
-      unless prep.body.nil? or prep.body.empty?
-        req.body = prep.body
+      body = prep.body
+      unless body.nil? or body.empty? or [:options, :head].member? prep.method
+        req.body = body
         req.content_type = prep.headers['content-type']
       end
 

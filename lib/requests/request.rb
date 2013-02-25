@@ -36,7 +36,7 @@ module Requests
 
     def prepare_method(method)
       if not method.nil?
-        @method = method.upcase
+        @method = method.to_sym
       end
     end
 
