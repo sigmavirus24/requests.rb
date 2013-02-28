@@ -44,6 +44,10 @@ module Requests
       @uri.to_s
     end
 
+    def url=(request_url)
+      @uri = URI(request_url)
+    end
+
     def prepare_url(url, params)
       @uri = URI(url)
 
@@ -91,7 +95,12 @@ module Requests
     private
     def encode_params(params)
       if params.respond_to? :map
-        return URI.encode_www_form params
+        if URI.respond_to? :encode_www_form
+          return URI.encode_www_form params
+        else
+          params = params.map { |k, v| "#{k}=#{v}" }
+          return params.join '&'
+        end
       else
         return params
       end

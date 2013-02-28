@@ -60,7 +60,27 @@ module Requests
       else
         r = nil
       end
+
+      #r = resolve_redirects(r) unless r.nil?
       return r
+    end
+
+    def resolve_redirects(response)
+      if [301, 302, 305, 307].member? response.code
+        url = response.headers['location']
+        prep = PreparedRequest.new
+        prep.prepare_url(url, {})
+        prep.method = response.request.method
+        prep.headers = response.request.headers
+        # This needs to be fixed
+        prep.body = response.request.body
+
+        r = send(prep)
+        r.history <<= response
+        response = r
+      end
+
+      return resposne
     end
   end
 end
