@@ -33,6 +33,7 @@ class TestHeaders < Test::Unit::TestCase
 
   def test_includes
     #assert_includes(Requests::Headers, Net::HTTPHeader)
+    assert(Requests::Headers.include?(Net::HTTPHeader), true)
   end
 
   def test_multiple
