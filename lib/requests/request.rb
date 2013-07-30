@@ -30,8 +30,17 @@ module Requests
   class PreparedRequest
     attr_accessor :method, :uri, :headers, :body
 
-    def initialize()
+    def initialize
       @method = @uri = @headers = @body = nil
+    end
+
+    def copy
+      p = PreparedRequest.new
+      p.method = @method
+      p.uri = @uri
+      p.headers = @headers
+      p.body = @body
+      return p
     end
 
     def prepare_method(method)
@@ -92,7 +101,7 @@ module Requests
       end
     end
 
-    private
+  private
     def encode_params(params)
       if params.respond_to? :map
         if URI.respond_to? :encode_www_form

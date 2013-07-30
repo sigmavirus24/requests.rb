@@ -6,6 +6,7 @@ require 'requests/response'
 
 module Requests
   DEFAULT_REDIRECT_LIMIT = 30
+  REDIRECT_STATI = [301, 302, 305, 307].freeze
 
   class Session
     def initialize
@@ -66,7 +67,7 @@ module Requests
     end
 
     def resolve_redirects(response)
-      if [301, 302, 305, 307].member? response.code
+      if REDIRECT_STATI.member? response.code
         url = response.headers['location']
         prep = PreparedRequest.new
         prep.prepare_url(url, {})
@@ -76,7 +77,7 @@ module Requests
         prep.body = response.request.body
 
         r = send(prep)
-        r.history <<= response
+        r.history.push response
         response = r
       end
 
