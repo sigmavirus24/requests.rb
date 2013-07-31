@@ -7,7 +7,7 @@ end
 
 describe Requests do
   it 'makes simple GET requests' do 
-    response = Requests.get httpbin 'get'
+    response = Requests.get httpbin('get')
     expect(response.json).to_not be_empty
   end
 

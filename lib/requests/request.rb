@@ -101,61 +101,58 @@ module Requests
       end
     end
 
-  private
+  #private
     def encode_params(params)
       if params.respond_to? :map
-        if URI.respond_to? :encode_www_form
-          return URI.encode_www_form params
-        else
-          params = params.map { |k, v| "#{k}=#{v}" }
-          return params.join '&'
-        end
+        return URI.encode_www_form params
       else
+        # Probably a string or something that URI#encode_www_form can't handle
         return params
       end
     end
 
     def encode_files(data, files)
-      #combined = []
-      #boundary = SecureRandom.uuid.gsub(/-/, '')
-      #content_type = "multipart/form-data; boundary=#{boundary}"
-      #data.each do |k, v|
-      #  if v.is_a? Array
-      #    v.each { |j| combined <<= [k, j] }
-      #  else
-      #    combined <<= [k, j]
-      #  end
-      #end
+      combined = []
+      boundary = SecureRandom.uuid.gsub(/-/, '')
+      content_type = "multipart/form-data; boundary=#{boundary}"
+      data.each do |k, v|
+        if v.is_a? Array
+          v.each { |j| combined <<= [k, j] }
+        else
+          combined <<= [k, v]
+        end
+      end
 
-      #files.each do |k, v|
-      #  type = nil
-      #  if v.is_a? Array
-      #    if v.length == 2
-      #      name, pointer = v
-      #    else
-      #      name, pointer, type = v
-      #    end
-      #  else
-      #    name = k
-      #    pointer = v
-      #  end
+      files.each do |k, v|
+        type = nil
+        if v.is_a? Array
+          if v.length == 2
+            name, pointer = v
+          else
+            name, pointer, type = v
+          end
+        else
+          name = k
+          pointer = v
+        end
 
-      #  if pointer.respond_to? read
-      #    pointer = pointer.read
-      #  end
+        if pointer.respond_to? :read
+          pointer = pointer.read
+        end
 
-      #  combined <<= [k, type.nil? ? [name, pointer] : [name, pointer, type]]
-      #end
+        combined <<= [k, type.nil? ? [name, pointer] : [name, pointer, type]]
+      end
 
-      #combined.each do |k, v|
-      #  body = "--#{boundary}\r\n"
+      body = "--#{boundary}\r\n"
+      combined.each do |k, v|
+        body = "--#{boundary}\r\n"
 
-      #  if v.is_a? Array
-      #    if v.length == 2
-      #    end
-      #  end
-      #end
-      #return body, content_type
+        if v.is_a? Array
+          if v.length == 2
+          end
+        end
+      end
+      return combined, content_type
     end
   end
 end
