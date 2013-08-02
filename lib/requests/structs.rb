@@ -13,6 +13,12 @@ module  Requests
         initialize_http_header(initial_headers)
       end
     end
+
+    def include?(key)
+      fetch(key) && true
+    rescue
+      false
+    end
   end
 
   class CookieJar

@@ -86,14 +86,11 @@ module Requests
     end
 
     def prepare_body(data, files)
-      if not files.nil? and not files.empty?
-        #@body, content_type = encode_files(data, files)
-        #@headers['Content-Type'] = content_type
-        raise NotImplementedError.new("multipart/form-data bodies have not yet " +
-                                   "been implemented")
-      else
+      if files.empty? and not data.empty?
         @body = encode_params(data)
         @headers['content-type'] = 'application/x-www-form-urlencoded'
+      else
+        (@body, @headers['content-type']) = encode_files(data, files)
       end
 
       unless @body.nil? or @body.empty?
