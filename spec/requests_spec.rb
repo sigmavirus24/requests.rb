@@ -22,14 +22,14 @@ describe Requests do
       request = PreparedRequest.new
       request.prepare_headers Hash.new
       request.prepare_body(
-        {foo: 'bar'},
+        Hash.new,
         {file: 'baz'}
       )
       request.headers.include?('Content-Type').should be_true
       request.headers['Content-Type'].should match %r|^multipart/form-data; boundary=\S+$|
       request.headers['Content-Type'] =~ /^.*boundary=(.*)$/
       boundary = $1
-      request.body.should eq "--#{boundary}\r\nContent-Disposition: form-data; name=\"foo\"\r\n\r\nbar\r\n--#{boundary}"
+      request.body.should eq "--#{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"file\"\r\n\r\nbaz\r\n--#{boundary}--\r\n"
     end
   end
 end

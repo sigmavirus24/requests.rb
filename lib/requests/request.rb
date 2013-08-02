@@ -124,32 +124,38 @@ module Requests
         type = nil
         if v.is_a? Array
           if v.length == 2
-            name, pointer = v
+            name, content = v
           else
-            name, pointer, type = v
+            name, content, type = v
           end
         else
           name = k
-          pointer = v
+          content = v
         end
 
-        if pointer.respond_to? :read
-          pointer = pointer.read
+        if content.respond_to? :read
+          content = content.read
         end
 
-        combined <<= [k, type.nil? ? [name, pointer] : [name, pointer, type]]
+        combined << [k, type.nil? ? [name, content] : [name, content, type]]
       end
 
       body = "--#{boundary}\r\n"
       combined.each do |k, v|
-        body = "--#{boundary}\r\n"
+        body << "Content-Disposition: form-data; name=\"#{k}\""
 
         if v.is_a? Array
           if v.length == 2
+            body << "; filename=\"#{v.first}\""
+            content = v.last
+          else
+            content = v
           end
+          body <<  "\r\n\r\n#{content}\r\n"
         end
       end
-      return combined, content_type
+      body << "--#{boundary}--\r\n"
+      return body, content_type
     end
   end
 end
