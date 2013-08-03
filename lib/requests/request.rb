@@ -140,21 +140,24 @@ module Requests
         combined << [k, type.nil? ? [name, content] : [name, content, type]]
       end
 
-      body = "--#{boundary}\r\n"
-      combined.each do |k, v|
-        body << "Content-Disposition: form-data; name=\"#{k}\""
+      boundary = "--#{boundary}"
+
+      combined = combined.map do |k, v|
+        form_entry = ""
+        form_entry << "Content-Disposition: form-data; name=\"#{k}\""
 
         if v.is_a? Array
           if v.length == 2
-            body << "; filename=\"#{v.first}\""
+            form_entry << "; filename=\"#{v.first}\""
             content = v.last
-          else
-            content = v
           end
-          body <<  "\r\n\r\n#{content}\r\n"
+        else
+          content = v
         end
+        form_entry <<  "\r\n\r\n#{content}\r\n"
       end
-      body << "--#{boundary}--\r\n"
+      form = combined.join("#{boundary}\r\n")
+      body = "#{boundary}\r\n#{form}#{boundary}--\r\n"
       return body, content_type
     end
   end
