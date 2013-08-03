@@ -98,7 +98,7 @@ module Requests
       end
     end
 
-  #private
+  private
     def encode_params(params)
       if params.respond_to? :map
         return URI.encode_www_form params
