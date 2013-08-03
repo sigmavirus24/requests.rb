@@ -21,12 +21,6 @@ module Requests
     end
 
     def request(method, url, args={})
-    #def request(method,
-    #            url,
-    #            headers=Requests::Headers.new,
-    #            files=nil,
-    #            data=nil,
-    #            cookies=nil)
       r = Request.new(method, url, args)
       p = r.prepare()
       return send(p)
