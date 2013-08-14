@@ -73,10 +73,12 @@ module Requests
       end
 
       params = encode_params params
-      if @uri.query
-        @uri.query <<= "&#{params}"
-      else
-        @uri.query = params
+      unless params
+        if @uri.query
+          @uri.query <<= "&#{params}"
+        else
+          @uri.query = params
+        end
       end
     end
 
@@ -86,11 +88,13 @@ module Requests
     end
 
     def prepare_body(data, files)
-      if files.empty? and not data.empty?
-        @body = encode_params(data)
-        @headers['content-type'] = 'application/x-www-form-urlencoded'
-      else
-        (@body, @headers['content-type']) = encode_files(data, files)
+      unless data.empty?
+        if files.empty?
+          @body = encode_params(data)
+          @headers['content-type'] = 'application/x-www-form-urlencoded'
+        else
+          (@body, @headers['content-type']) = encode_files(data, files)
+        end
       end
 
       unless @body.nil? or @body.empty?

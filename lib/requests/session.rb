@@ -56,7 +56,7 @@ module Requests
         r = nil
       end
 
-      #r = resolve_redirects(r) unless r.nil?
+      r = resolve_redirects(r) unless r.nil?
       return r
     end
 
@@ -75,7 +75,7 @@ module Requests
         response = r
       end
 
-      return resposne
+      return response
     end
   end
 end
