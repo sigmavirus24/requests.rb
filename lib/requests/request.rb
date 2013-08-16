@@ -88,13 +88,11 @@ module Requests
     end
 
     def prepare_body(data, files)
-      unless data.empty?
-        if files.empty?
-          @body = encode_params(data)
-          @headers['content-type'] = 'application/x-www-form-urlencoded'
-        else
-          (@body, @headers['content-type']) = encode_files(data, files)
-        end
+      if not files.empty?
+        (@body, @headers['content-type']) = encode_files(data, files)
+      elsif not data.empty?
+        @body = encode_params(data)
+        @headers['content-type'] = 'application/x-www-form-urlencoded'
       end
 
       unless @body.nil? or @body.empty?

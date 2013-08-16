@@ -7,3 +7,5 @@ group :test do
 end
 
 gemspec
+
+# vim: set ft=ruby
