@@ -1,7 +1,7 @@
 Gem::Specification.new do |gem|
   gem.name = 'requests'
   gem.version = '0.0.0'
-  gem.date = '2012-02-16'
+  gem.date = '2013-08-16'
   gem.summary = 'A port of python-requests to ruby'
   gem.description = 'Making HTTP easier for humans everywhere'
   gem.authors = ['Ian Cordasco']
